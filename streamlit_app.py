@@ -17,6 +17,23 @@ INDEX_NAME = "index"
 EMBED_MODEL = "sentence-transformers/sentence-t5-large"
 LLM_MODEL = "google/gemma-2-9b"   # or meta-llama/Llama-3.2-3b-instruct
 
+
+
+
+@st.cache_resource
+def load_faiss(_emb):
+    faiss_file = FAISS_DIR / f"{INDEX_NAME}.faiss"
+    if not faiss_file.exists():
+        st.error("❌ FAISS index not found. Please build it first.")
+        return None
+    return FAISS.load_local(
+        folder_path=str(FAISS_DIR),
+        embeddings=_emb,
+        index_name=INDEX_NAME,
+        allow_dangerous_deserialization=True,
+    )
+
+
 # ========== Cache Helpers ==========
 @st.cache_resource
 def load_embeddings():
