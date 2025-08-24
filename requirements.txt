@@ -5,3 +5,10 @@ langchain-community
 langchain-huggingface
 faiss-cpu
 sentence-transformers
+streamlit==1.37.0
+huggingface_hub==0.23.5
+langchain==0.2.5
+langchain-community==0.2.5
+langchain-huggingface==0.0.3
+faiss-cpu==1.8.0
+sentence-transformers==3.0.1
