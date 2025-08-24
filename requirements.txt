@@ -1,1 +1,7 @@
 streamlit
+huggingface_hub
+langchain
+langchain-community
+langchain-huggingface
+faiss-cpu
+sentence-transformers
