@@ -15,7 +15,7 @@ FAISS_DIR = APP_DIR / "faiss_index"
 INDEX_NAME = "index"
 
 EMBED_MODEL = "sentence-transformers/sentence-t5-large"
-LLM_MODEL = "google/gemma-2-9b"   # or meta-llama/Llama-3.2-3b-instruct
+LLM_MODEL = "sentence-transformers/all-MiniLM-L6-v2"   # or meta-llama/Llama-3.2-3b-instruct
 
 
 
