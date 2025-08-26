@@ -20,18 +20,6 @@ LLM_MODEL = "sentence-transformers/all-MiniLM-L6-v2"   # or meta-llama/Llama-3.2
 
 
 
-@st.cache_resource
-def load_faiss(_emb):
-    faiss_file = FAISS_DIR / f"{INDEX_NAME}.faiss"
-    if not faiss_file.exists():
-        st.error("❌ FAISS index not found. Please build it first.")
-        return None
-    return FAISS.load_local(
-        folder_path=str(FAISS_DIR),
-        embeddings=_emb,
-        index_name=INDEX_NAME,
-        allow_dangerous_deserialization=True,
-    )
 
 
 # ========== Cache Helpers ==========
