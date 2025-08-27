@@ -28,6 +28,7 @@ def load_faiss(_emb):
         folder_path=str(FAISS_DIR),
         embeddings=_emb,
         index_name=INDEX_NAME,
+        FAISS.from_texts(texts, embeddings).save_local("faiss_index", index_name="index"),
         allow_dangerous_deserialization=True,
     )
 
@@ -39,6 +40,8 @@ embeddings = load_embeddings()
 db = load_faiss(embeddings)
 retriever = db.as_retriever(search_kwargs={"k": 4})
 client = get_hf_client()
+db = FAISS.from_texts(texts, embeddings)
+db.save_local("faiss_index", index_name="index")
 
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
