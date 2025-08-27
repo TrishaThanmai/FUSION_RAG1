@@ -22,13 +22,19 @@ LLM_MODEL = "google/gemma-2-9b"   # or meta-llama/Llama-3.2-3b-instruct
 def load_embeddings():
     return HuggingFaceEmbeddings(model_name=EMBED_MODEL, model_kwargs={"device": "cpu"})
 
-
 def ensure_faiss(emb):
+    """Create FAISS index if missing, else load existing one."""
     if not FAISS_DIR.exists():
         st.warning("FAISS index not found, creating a new one...")
-        texts = ["This is a fallback document.", "Upload real docs later."]
+        # Temporary fallback docs (replace with your real dataset later)
+        texts = [
+            "Fusion RAG retrieves documents with multiple queries.",
+            "Reciprocal Rank Fusion merges results for better accuracy.",
+            "This is a fallback document when no FAISS index is found."
+        ]
         db = FAISS.from_texts(texts, emb)
         db.save_local(str(FAISS_DIR), index_name=INDEX_NAME)
+
     return FAISS.load_local(
         folder_path=str(FAISS_DIR),
         embeddings=emb,
@@ -38,23 +44,17 @@ def ensure_faiss(emb):
 
 @st.cache_resource
 def load_faiss(_emb):
-    return FAISS.load_local(
-    folder_path=str(FAISS_DIR),
-    embeddings=_emb,
-    index_name=INDEX_NAME,
-    allow_dangerous_deserialization=True,
-)
+    return ensure_faiss(_emb)
 
 @st.cache_resource
 def get_hf_client():
     return InferenceClient(model=LLM_MODEL, token=HF_TOKEN)
 
+# Load resources
 embeddings = load_embeddings()
 db = load_faiss(embeddings)
 retriever = db.as_retriever(search_kwargs={"k": 4})
 client = get_hf_client()
-db = FAISS.from_texts(texts, embeddings)
-db.save_local("faiss_index", index_name="index")
 
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
