@@ -22,6 +22,20 @@ LLM_MODEL = "google/gemma-2-9b"   # or meta-llama/Llama-3.2-3b-instruct
 def load_embeddings():
     return HuggingFaceEmbeddings(model_name=EMBED_MODEL, model_kwargs={"device": "cpu"})
 
+
+def ensure_faiss(emb):
+    if not FAISS_DIR.exists():
+        st.warning("FAISS index not found, creating a new one...")
+        texts = ["This is a fallback document.", "Upload real docs later."]
+        db = FAISS.from_texts(texts, emb)
+        db.save_local(str(FAISS_DIR), index_name=INDEX_NAME)
+    return FAISS.load_local(
+        folder_path=str(FAISS_DIR),
+        embeddings=emb,
+        index_name=INDEX_NAME,
+        allow_dangerous_deserialization=True,
+    )
+
 @st.cache_resource
 def load_faiss(_emb):
     return FAISS.load_local(
