@@ -5,7 +5,10 @@ import streamlit as st
 from pathlib import Path
 from huggingface_hub import InferenceClient
 from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_core.documents import Document
 from langchain_community.vectorstores import FAISS
+
+
 
 # ========== 🧩 Configuration ==========
 st.set_page_config(page_title="Fusion RAG Chatbot", page_icon="🤖", layout="centered")
@@ -30,6 +33,10 @@ def load_embeddings():
         model_name=EMBED_MODEL_NAME,
         model_kwargs={"device": "cpu"}
     )
+    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/sentence-t5-large")
+docs = [Document(page_content="...")]  # your documents
+db = FAISS.from_documents(docs, embeddings)
+db.save_local("faiss_index")  # Saves index.faiss and index.pkl
 
 @st.cache_resource
 def load_vector_store(_embeddings):
